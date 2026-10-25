@@ -7,7 +7,13 @@ export default function Home() {
       <main>
         <svg className="framework-mark" viewBox="0 0 24 24" fill="none" aria-hidden="true">
           <circle cx="12" cy="12" r="10.4" stroke="currentColor" strokeWidth="1.3" />
-          <path d="M8.4 16.4V7.9l8 10.2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+          <path
+            d="M8.4 16.4V7.9l8 10.2"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
           <path d="M15.5 7.9v5.2" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
         </svg>
         <p className="status">

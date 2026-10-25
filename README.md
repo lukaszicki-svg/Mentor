@@ -1,36 +1,101 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# workspace-app
 
-## Getting Started
+A Next.js 16 (App Router) + React 19 + TypeScript application, set up for
+AI-assisted, Specification-Driven Development (SDD).
 
-First, run the development server:
+## Stack
+
+- **Next.js 16** (App Router, Turbopack) · **React 19** · **TypeScript**
+- ESLint (`eslint-config-next`) + **Prettier**
+- **Vitest** + React Testing Library for unit tests
+- **Playwright** for E2E tests (smoke-test scaffold)
+- GitHub Actions CI on every pull request
+
+See [`AGENTS.md`](./AGENTS.md) for the full set of engineering conventions,
+directory structure, and the agent workflow this repository follows.
+`CLAUDE.md` simply imports `AGENTS.md` so any AI coding agent reads the same
+instructions.
+
+## Getting started
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). The app auto-reloads as
+you edit files under `src/app`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```
+.ai/                      Specs, run logs, and lessons for AI coding agents
+.github/workflows/        CI pipeline (lint, typecheck, build, tests)
+e2e/                       Playwright E2E specs
+public/                    Static assets
+src/app/                   Next.js App Router: pages, layouts, API routes
+  api/health/route.ts      Example API route (GET /api/health)
+  page.tsx, layout.tsx     Root route
+```
 
-## Learn More
+New features should be grouped by **domain** (e.g. a route group per
+business concept), with domain-local helpers colocated in private `_lib` /
+`_components` folders rather than split across generic `components/`,
+`services/`, `utils/` buckets. See `AGENTS.md` → "Directory structure" for
+the full rationale and an example.
 
-To learn more about Next.js, take a look at the following resources:
+## Available scripts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Script                  | Purpose                                       |
+| ----------------------- | --------------------------------------------- |
+| `npm run dev`           | Start the dev server                          |
+| `npm run build`         | Production build                              |
+| `npm start`             | Run the production build                      |
+| `npm run lint`          | ESLint                                        |
+| `npm run format`        | Format the codebase with Prettier             |
+| `npm run format:check`  | Check formatting without writing (used in CI) |
+| `npm run typecheck`     | TypeScript, no emit                           |
+| `npm test`              | Unit tests (Vitest)                           |
+| `npm run test:watch`    | Unit tests in watch mode                      |
+| `npm run test:coverage` | Unit tests with a coverage report             |
+| `npm run test:e2e`      | Playwright E2E tests (builds + boots the app) |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Working with AI coding agents
 
-## Deploy on Vercel
+This repository is set up for agent-assisted, Specification-Driven
+Development:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **`AGENTS.md`** — stack, conventions, and the required agent workflow
+  (read before coding, spec before building, verify after building).
+- **`.ai/specs/`** — technical specs (`YYYY-MM-DD-slug.md`), moved to
+  `.ai/specs/implemented/` once shipped or `.ai/specs/archive/` if dropped.
+- **`.ai/runs/`** — logs of agent sessions: decisions, progress, handoff.
+- **`.ai/lessons.md`** / **`.ai/lessons/`** — durable lessons learned, so
+  the same mistake isn't repeated across sessions.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+GitHub is the source of truth for the SDLC: Issues for requirements, Pull
+Requests for implementation and review, `.ai/specs/` for technical specs,
+and GitHub Actions as the automated quality gate before merge.
+
+## CI
+
+Every pull request to `main` runs (`.github/workflows/ci.yml`):
+
+1. Install dependencies (`npm ci`)
+2. Lint (`eslint`) and format check (`prettier --check`)
+3. Typecheck (`tsc --noEmit`)
+4. Production build
+5. Unit tests with a coverage report (uploaded as a build artifact)
+6. A Playwright E2E smoke test
+
+Postgres/Testcontainers-based integration tests are documented as a
+convention in `AGENTS.md` but not implemented yet, since the project does
+not use a database. Add them following that convention once one is
+introduced.
+
+## Learn more
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- This project's Next.js version is new enough that training data for AI
+  tools may be stale — see the note at the top of `AGENTS.md` and read
+  `node_modules/next/dist/docs/` before relying on memorized APIs.
