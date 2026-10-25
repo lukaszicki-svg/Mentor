@@ -35,13 +35,13 @@ specific to the production build's prerender phase.
 
 Treat this as a sandbox/environment issue (possibly a Node 24 + Next 16
 worker-thread incompatibility specific to this container), not a code bug.
-Before debugging a failing `build` step in this repo:
 
-1. Confirm whether it also fails on the actual GitHub Actions runner (the
-   CI workflow runs `npm run build` on `ubuntu-latest`) — if it passes
-   there, the sandbox is the problem, not the code.
-2. Don't "fix" it by downgrading dependencies or changing application code
-   — that was tried and made no difference here.
-3. If it does reproduce in CI, that's worth an upstream Next.js issue
-   report with a minimal repro (the untouched starter already reproduces
-   it), rather than a workaround in this codebase.
+**Confirmed 2026-10-25:** the `CI` workflow's `verify` job (`npm run
+build` on `actions/setup-node@v4` + `ubuntu-latest`) passed on the real
+GitHub Actions runner for this exact commit
+(https://github.com/lukaszicki-svg/Mentor/actions/runs/40219283302) —
+`lint`, `typecheck`, `build`, unit tests, and the Playwright E2E smoke test
+all succeeded. This confirms the crash is specific to this local sandbox
+container and not a real defect in the repo. No further action needed; if
+`npm run build` fails locally in this sandbox again, don't spend time
+"fixing" it here — just verify against the GitHub Actions run instead.

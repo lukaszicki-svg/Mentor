@@ -49,14 +49,25 @@
 | `npm run format:check`  | ✅ pass                                                                                         |
 | `npm run typecheck`     | ✅ pass                                                                                         |
 | `npm run test:coverage` | ✅ pass — 100% on `src/app/page.tsx` and `src/app/api/health/route.ts`                          |
-| `npm run build`         | ❌ pre-existing sandbox issue — see lesson above, not caused by this session's changes          |
+| `npm run build`         | ❌ locally in this sandbox — ✅ confirmed passing on real GitHub Actions CI (see update below)  |
 | `npm run test:e2e`      | Not run in this session (needs Playwright browser binaries + a successful build; wired into CI) |
+
+## Update — 2026-10-25
+
+Pushed this work to `origin/main` and let the CI workflow run on real
+GitHub Actions infrastructure:
+https://github.com/lukaszicki-svg/Mentor/actions/runs/40219283302
+
+All three jobs passed: `Lint, typecheck, build` (including `npm run
+build`), `Unit tests + coverage`, and `E2E smoke test (Playwright)`. This
+confirms the local build crash was specific to the sandbox container, not
+a real defect — see the updated lesson. The repo now has a working,
+verified minimal CI gate (compiles + unit tests, plus lint/typecheck/E2E)
+on every push/PR to `main`.
 
 ## Handoff
 
-- Everything in the spec's plan is implemented except the build step's
-  pre-existing failure, which is out of scope (environment issue, not a
-  code defect) and documented as a lesson + follow-up.
+- Everything in the spec's plan is implemented and verified on real CI.
 - Next session / next lesson: install Open Mercato skills; once a database
   is introduced, implement the Testcontainers/Postgres integration test
   convention documented in `AGENTS.md`; verify the `next build` crash
